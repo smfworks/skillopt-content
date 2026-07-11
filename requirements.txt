@@ -1,0 +1,4 @@
+# No hard dependencies for the minimal loop.
+# Add your LLM client extras when wiring a real scorer, e.g.:
+# openai>=1.0.0
+# requests>=2.31.0
