@@ -43,6 +43,8 @@ v0.2 scores `scorer.score(article, id, skill_text)`. A candidate that does not c
 - Unknown edit types (skip vs raise)
 - Constant scorer never accepts
 - Absolute `--out` refused without `--allow-absolute`
+- **Missed edits cannot invent a gain** (no audit-stamp scoring)
+- Non-numeric utility does not crash ranking
 
 ## What this is not
 

@@ -5,7 +5,7 @@
 > This is an **applied pattern kit**, not a reimplementation of Microsoft’s SkillOpt paper or a drop-in for their forthcoming release.
 > Paper: [SkillOpt (arXiv:2605.23904)](https://arxiv.org/abs/2605.23904) · Related: [Bilevel-Autoresearch](https://github.com/EdwardOptimization/Bilevel-Autoresearch)
 
-Current kit version: **0.2.0** (production-hardened loop, tests, CI).
+Current kit version: **0.2.1** (oppositional pass: stamps no longer score).
 
 ---
 

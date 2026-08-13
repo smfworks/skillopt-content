@@ -2,11 +2,35 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
 VALID_TYPES = frozenset({"replace", "add", "delete"})
+AUDIT_STAMP_RE = re.compile(
+    r"\n*<!-- skillopt-content-edit [^>]*-->\n?",
+    re.MULTILINE,
+)
+
+
+def strip_audit_stamps(text: str) -> str:
+    """Remove kit audit comments so they cannot change scores."""
+    cleaned = AUDIT_STAMP_RE.sub("\n", text or "")
+    if (text or "").endswith("\n"):
+        return cleaned.rstrip() + "\n"
+    return cleaned.rstrip()
+
+
+def safe_utility(edit: dict[str, Any]) -> float:
+    raw = edit.get("utility", 0)
+    try:
+        value = float(raw)
+    except (TypeError, ValueError):
+        return 0.0
+    if value != value:  # NaN
+        return 0.0
+    return value
 
 
 class EditError(ValueError):
@@ -67,10 +91,11 @@ def validate_edit(edit: dict[str, Any]) -> None:
         raise EditError("delete requires old_text")
 
 
-def rank_edits(edits: list[dict[str, Any]], lr: int) -> list[dict[str, Any]]:
+def rank_edits(edits: list[Any], lr: int) -> list[dict[str, Any]]:
     if lr < 0:
         raise ValueError("lr must be >= 0")
-    return sorted(edits, key=lambda e: float(e.get("utility", 0) or 0), reverse=True)[:lr]
+    valid = [e for e in edits if isinstance(e, dict)]
+    return sorted(valid, key=safe_utility, reverse=True)[:lr]
 
 
 def apply_bounded_edits(
@@ -113,7 +138,7 @@ def apply_bounded_edits_detailed(
     if not isinstance(skill, str):
         raise TypeError("skill must be a string")
 
-    ranked = rank_edits(edits, lr)
+    ranked = rank_edits(list(edits or []), lr)
     out = skill
     applied: list[AppliedEdit] = []
 

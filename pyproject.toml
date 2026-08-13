@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "skillopt-content"
-version = "0.2.0"
+version = "0.2.1"
 description = "SkillOpt-style training loop for agent content skills — bounded edits, validation gate, rejected-edit buffer."
 readme = "README.md"
 license = { text = "MIT" }

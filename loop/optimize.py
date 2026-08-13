@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, TextIO
 
-from loop.edits import apply_bounded_edits_detailed
+from loop.edits import apply_bounded_edits_detailed, strip_audit_stamps
 
 ProposalFn = Callable[[str, int], list[dict[str, Any]]]
 
@@ -54,7 +54,10 @@ class LoopResult:
 def mean_score(scorer, articles: Sequence[Article], skill_text: str) -> float:
     if not articles:
         return 0.0
-    scores = [float(scorer.score(a.content, a.id, skill_text)) for a in articles]
+    clean = strip_audit_stamps(skill_text)
+    scores = [float(scorer.score(a.content, a.id, clean)) for a in articles]
+    if any(s != s or s in (float("inf"), float("-inf")) for s in scores):
+        raise ValueError("scorer returned a non-finite score")
     return round(sum(scores) / len(scores), 2)
 
 
@@ -158,13 +161,17 @@ def run_loop(
     emit({"event": "start", "articles": len(articles), "train": len(train), "selection": len(selection)})
 
     for epoch in range(epochs):
-        train_scores = [float(scorer.score(a.content, a.id, current)) for a in train]
+        train_scores = [float(scorer.score(a.content, a.id, strip_audit_stamps(current))) for a in train]
         edits = propose(current, epoch)
-        result = apply_bounded_edits_detailed(current, edits, lr)
+        result = apply_bounded_edits_detailed(current, edits, lr, stamp=False)
         candidate = result.text
         cur_score = mean_score(scorer, selection, current)
         cand_score = mean_score(scorer, selection, candidate)
-        accepted = cand_score > cur_score
+        meaningful = (
+            result.success_count > 0
+            and strip_audit_stamps(candidate) != strip_audit_stamps(current)
+        )
+        accepted = meaningful and cand_score > cur_score
         drop = None if accepted else round(cur_score - cand_score, 2)
 
         record = EpochRecord(
@@ -191,6 +198,8 @@ def run_loop(
                     "epoch": epoch + 1,
                     "drop": drop,
                     "applied": list(result.applied_labels),
+                    "edits": edits,
+                    "success_count": result.success_count,
                 }
             )
 

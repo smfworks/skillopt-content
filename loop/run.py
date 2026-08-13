@@ -107,7 +107,9 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"[reject] drop={rec.drop:.2f} applied={rec.success_count}")
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(result.best_skill, encoding="utf-8")
+    tmp_path = out_path.with_name(out_path.name + ".tmp")
+    tmp_path.write_text(result.best_skill, encoding="utf-8")
+    tmp_path.replace(out_path)
     if not args.quiet:
         print(
             f"\n[done] wrote {out_path} "
