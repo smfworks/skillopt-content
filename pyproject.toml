@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "skillopt-content"
+version = "0.2.0"
+description = "SkillOpt-style training loop for agent content skills — bounded edits, validation gate, rejected-edit buffer."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "SMF Works" }]
+keywords = ["agents", "skills", "writing", "optimization"]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Typing :: Typed",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[project.scripts]
+skillopt-content = "loop.run:main"
+
+[project.urls]
+Homepage = "https://github.com/smfworks/skillopt-content"
+Issues = "https://github.com/smfworks/skillopt-content/issues"
+
+[tool.setuptools.packages.find]
+include = ["loop*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "B"]
