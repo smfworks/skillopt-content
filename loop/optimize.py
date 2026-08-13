@@ -173,8 +173,8 @@ def run_loop(
             current_score=cur_score,
             candidate_score=cand_score,
             accepted=accepted,
-            applied=list(result.applied),
-            success_count=result.hit_count,
+            applied=list(result.applied_labels),
+            success_count=result.success_count,
             drop=drop,
         )
         records.append(record)
@@ -190,7 +190,7 @@ def run_loop(
                 {
                     "epoch": epoch + 1,
                     "drop": drop,
-                    "applied": list(result.applied),
+                    "applied": list(result.applied_labels),
                 }
             )
 

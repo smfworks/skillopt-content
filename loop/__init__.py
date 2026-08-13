@@ -1,8 +1,10 @@
 """Minimal SkillOpt-style loop for content skills."""
 
 from loop.edits import (
+    AppliedEdit,
     ApplyResult,
     EditError,
+    EditResult,
     apply_bounded_edits,
     apply_bounded_edits_detailed,
     validate_edit,
@@ -20,10 +22,12 @@ __version__ = "0.2.0"
 
 __all__ = [
     "Article",
+    "AppliedEdit",
     "ApplyResult",
     "ConstantScorer",
     "DeterministicMockScorer",
     "EditError",
+    "EditResult",
     "HeuristicChecklistScorer",
     "LoopResult",
     "SkillAwareMockScorer",

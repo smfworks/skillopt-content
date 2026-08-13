@@ -36,6 +36,10 @@ class EditResult:
         )
 
     @property
+    def hit_count(self) -> int:
+        return self.success_count
+
+    @property
     def applied_labels(self) -> list[str]:
         return [e.label() for e in self.applied]
 
