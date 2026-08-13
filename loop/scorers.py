@@ -75,7 +75,7 @@ class HeuristicChecklistScorer:
     def score(self, article: str, article_id: str, skill_text: str = "") -> float:
         if not article.strip():
             return 0.0
-        skill_tokens = list(self._tokens(skill_text))[: self.max_tokens]
+        skill_tokens = sorted(self._tokens(skill_text))[: self.max_tokens]
         if not skill_tokens:
             return 5.0
         article_tokens = self._tokens(article)

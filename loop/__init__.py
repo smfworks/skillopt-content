@@ -7,6 +7,7 @@ from loop.edits import (
     EditResult,
     apply_bounded_edits,
     apply_bounded_edits_detailed,
+    strip_audit_stamps,
     validate_edit,
 )
 from loop.optimize import Article, LoopResult, load_articles, run_loop
@@ -18,7 +19,7 @@ from loop.scorers import (
     get_scorer,
 )
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 __all__ = [
     "Article",
@@ -36,6 +37,7 @@ __all__ = [
     "get_scorer",
     "load_articles",
     "run_loop",
+    "strip_audit_stamps",
     "validate_edit",
     "__version__",
 ]
